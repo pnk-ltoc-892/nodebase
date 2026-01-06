@@ -5,9 +5,7 @@ import { requireUnauth } from "@/lib/auth-utils"
 const page = async () => {
   await requireUnauth()
   return (
-    <div>
-      <RegisterForm />
-    </div>
+    <RegisterForm />
   )
 }
 
