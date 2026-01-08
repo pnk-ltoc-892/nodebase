@@ -1,27 +1,38 @@
-import prisma from "@/lib/db";
 import { inngest } from "./client";
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
+import { openai } from '@ai-sdk/openai';
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+
+export const execute = inngest.createFunction(
+  { id: "execute-ai" },
+  { event: "execute/ai" },
   async ({ event, step }) => {
-    // Fetching something
-    await step.sleep("fetching", "4s");
 
-    // Processing something
-    await step.sleep("processing", "4s");
+    await step.sleep("pretend", "5s")
 
-    // Making a entry
-    await step.sleep("recording", "4s");
-
-    await step.run("create-workflow", async () => {
-      await prisma.workflow.create({
-        data: {
-          name: "Workflow From Inngest Function"
-        }
-      })
-    })
-
-    return { message: `Hello ${event.data.email}!` };
+    // Just an inngest optimization way
+    const { steps: geminiStep } = await step.ai.wrap(
+      "gemini-generate-text",
+      generateText,
+      {
+        model: google('gemini-2.5-flash'),
+        system: "You are a helpful assistant",
+        prompt: "Give a morning motivational thought"
+      }
+    )
+    const { steps: openaiStep } = await step.ai.wrap(
+      "openai-generate-text",
+      generateText,
+      {
+        model: openai('gpt-4'),
+        system: "You are a helpful assistant",
+        prompt: "Give a morning motivational thought"
+      }
+    )
+    return {
+      geminiStep,
+      openaiStep
+    };
   },
 );
