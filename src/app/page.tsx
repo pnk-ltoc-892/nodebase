@@ -1,17 +1,31 @@
-import { requireAuth } from "@/lib/auth-utils"
-import { caller } from "@/trpc/server"
+"use client"
+import { Button } from "@/components/ui/button"
 import LogOutButton from "./logout"
+import { useTRPC } from "@/trpc/client"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
-const page = async () => {
-    await requireAuth()   // Removal still be protected by protected Procedure
+const page = () => {
+    const trpc = useTRPC()
+    const queryClient = useQueryClient()
+    const { data } = useQuery(trpc.getWorkflows.queryOptions())
 
-    const data = await caller.getUsers()
+    const create = useMutation(trpc.createWorkflow.mutationOptions({
+      onSuccess: () => {
+        // queryClient.invalidateQueries(trpc.getWorkflows.queryOptions())
+        toast.success("Job queued")
+      }
+    }))
+
     return (
       <div className="min-h-screen min-w-screen flex items-center justify-center text-white bg-black flex-col gap-y-6">
         protected server component
         <div>
           {JSON.stringify(data)}
         </div>
+        <Button disabled={create.isPending} onClick={() => create.mutate()}>
+          Create Workflow
+        </Button>
           <LogOutButton />
       </div>
 
@@ -19,29 +33,3 @@ const page = async () => {
 }
 
 export default page
-
-
-
-// As a Client Component
-// "use client"
-
-// import { Button } from "@/components/ui/button"
-// import { authClient } from "@/lib/auth-client"
-
-// const page = () => {
-//   const { data } = authClient.useSession()
- 
-//   return (
-//     <div className="min-h-screen min-w-screen flex items-center justify-center text-white bg-black">
-//       {JSON.stringify(data)}
-//       {
-//         data && 
-//           <Button onClick={() => authClient.signOut()}>
-//           Logout
-//         </Button>
-//       }
-//     </div>
-//   )
-// }
-
-// export default page
