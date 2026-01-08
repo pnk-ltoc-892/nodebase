@@ -13,7 +13,10 @@ const page = () => {
     const testAI = useMutation(trpc.testAI.mutationOptions({
       onSuccess: () => {
         toast.success("AI Job Queued")
-      }
+      },
+      onError: () => {
+        toast.success("Something Went Wrong")
+      },
     }))
 
     return (
