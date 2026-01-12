@@ -13,6 +13,16 @@ interface UseEntitySearchProps<T extends {
 }
 
 
+/**
+ * Provides a debounced local search state that stays in sync with external params and resets pagination when the search changes.
+ *
+ * Keeps an internal `searchValue` synchronized with `params.search`. When the local search is cleared it immediately updates `params` to clear the search and reset `page` to `PAGINATION.DEFAULT_PAGE`. Otherwise it updates `params.search` to the debounced local value and resets `page` to `PAGINATION.DEFAULT_PAGE` after `debounceMs` milliseconds.
+ *
+ * @param params - External params object containing `search` and `page`
+ * @param setParams - Callback to update the external params
+ * @param debounceMs - Debounce delay in milliseconds for updating `params.search` (default: 500)
+ * @returns An object with `searchValue` (the current local search string) and `onSearchChange` (setter to update the local search)
+ */
 export function useEntitySearch<T extends {
     search: string 
     page: number

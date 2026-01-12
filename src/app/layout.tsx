@@ -21,6 +21,14 @@ export const metadata: Metadata = {
   description: "AI Automations & WorkFlows",
 };
 
+/**
+ * Application root layout that sets the document language, applies global fonts, and provides app-level contexts.
+ *
+ * Renders the provided `children` as descendants of the TRPC and Nuqs adapters and includes a global Toaster.
+ *
+ * @param children - The page or application content to render inside the layout providers
+ * @returns A React element representing the application's root HTML and body structure
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
