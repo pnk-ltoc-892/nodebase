@@ -63,14 +63,14 @@ export const WorkflowsHeader = ({disabled}: {disabled?: boolean}) => {
 }
 
 export const WorkflowsPagination = () => {
-  const worklflows = useSuspenseWorkflows()
+  const workflows = useSuspenseWorkflows()
   const [params, setParams] = useWorkflowsParams()
 
   return (
     <EntityPagination 
-      disabled={worklflows.isFetching}
-      totalPages={worklflows.data.totalPages}
-      page={worklflows.data.page}
+      disabled={workflows.isFetching}
+      totalPages={workflows.data.totalPages}
+      page={workflows.data.page}
       onPageChange={(page) => setParams({ ...params, page })}
     />
   )
