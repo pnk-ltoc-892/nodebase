@@ -45,14 +45,20 @@ export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
   }, [isEditing])
 
   const handleSave = async () => {
-    if(name === workflow.name){
+    const trimmedName = name.trim()
+    if(!trimmedName){
+        setName(workflow.name)
+        setIsEditing(false)
+        return
+    }
+    if(trimmedName === workflow.name){
         setIsEditing(false)
         return
     }
     try {
         await updateWorkflow.mutateAsync({
             id: workflowId,
-            name
+            name: trimmedName
         })
     } 
     catch {
