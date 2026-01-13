@@ -71,7 +71,8 @@ export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if(e.key === "Enter"){
-        e.currentTarget.blur() // Blur first, let onBlur handle save
+        handleSave()
+        // e.currentTarget.blur() // Blur first, let onBlur handle save
     }
     else if(e.key === "Escape"){
         setName(workflow.name)
