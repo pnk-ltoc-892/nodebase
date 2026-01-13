@@ -163,7 +163,7 @@ export const WorkflowItem = ({
         </div>
       }
       onRemove={handleRemove}
-      isRemoving={false}
+      isRemoving={removeWorkflow.isPending}
     />
   )
 }
