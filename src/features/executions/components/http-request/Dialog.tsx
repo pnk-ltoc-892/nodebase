@@ -58,7 +58,7 @@ export const HTTPRequestDialog = ({
                 body: defaultBody
             })
         }
-    }, [open, defaultEndpoint, defaultBody, form])
+    }, [open, defaultEndpoint, defaultMethod, defaultBody, form])
 
     const watchMethod = form.watch("method")
     const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod)
@@ -89,8 +89,8 @@ export const HTTPRequestDialog = ({
                                 <FormItem>
                                     <FormLabel>Method</FormLabel>
                                     <Select
+                                        value={field.value}
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
                                     >
                                         <FormControl>
                                             <SelectTrigger className="w-full">
@@ -120,8 +120,8 @@ export const HTTPRequestDialog = ({
                                     <FormLabel>Endpoint URL</FormLabel>
                                     <FormControl>
                                         <Input 
-                                            placeholder="https://api.example.com/users/{{httpResponse.data.id}}"
                                             {...field}
+                                            placeholder="https://api.example.com/users/{{httpResponse.data.id}}"
                                         />
                                     </FormControl>
                                     <FormDescription>

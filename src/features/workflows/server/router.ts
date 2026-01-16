@@ -122,11 +122,11 @@ export const workflowsRouter = createTRPCRouter({
                 })
 
                 // Update workflow`s UpdatedAt timestamp
-                await tx.workflow.update({
+                const updatedWorkflow = await tx.workflow.update({
                     where: { id },
                     data: { updatedAt: new Date() }
                 })
-                return workflow
+                return updatedWorkflow
             })
         }),
     getOne: protectedProcedure
