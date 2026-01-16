@@ -8,10 +8,14 @@ import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, type Node, type
 import '@xyflow/react/dist/style.css';
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "./AddNodeButton";
+import { useSetAtom } from "jotai";
+import { editorAtom } from "../store/atoms";
 
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
     const {data: workflow} = useSuspenseWorkflow(workflowId)
+
+    const setEditor = useSetAtom(editorAtom)
 
     const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
     const [edges, setEdges] = useState<Edge[]>(workflow.edges);
@@ -39,6 +43,17 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
                 onConnect={onConnect}
                 nodeTypes={nodeComponents}
                 fitView
+                onInit={setEditor}
+
+                // TODO: Explore the settings for optimal user expirience
+                // These Allows Selection and concurrent Deletion using Backspace
+                // snapGrid={[10, 10]}
+                // snapToGrid
+                // panOnScroll
+                // panOnDrag={false}
+                // selectionOnDrag
+                
+
                 // proOptions={{
                 //     hideAttribution: true
                 // }}

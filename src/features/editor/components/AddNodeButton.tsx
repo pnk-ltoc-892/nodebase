@@ -10,7 +10,9 @@ export const AddNodeButton = memo(() => {
     return (
         <NodeSelector open={selectorOpen} onOpenChange={setSelectorOpen}>
             <Button
-                onClick={() => {}}
+                // Not needed as Sheet Trigger is rendering asChild and will Take Care
+                // onClick={() => setSelectorOpen(true)}
+                // onClick={() => {}}
                 size="icon"
                 variant="outline"
                 className="bg-background"
