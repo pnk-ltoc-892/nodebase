@@ -7,9 +7,9 @@ import { WorkflowNode } from "@/components/WorkflowNode";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
 import Image from "next/image";
 import { BaseHandle } from "@/components/react-flow/base-handle";
-import { NodeStatusIndicator, type NodeStatus } from "@/components/react-flow/node-status-indicator";
+import { NodeStatus, NodeStatusIndicator } from "@/components/react-flow/node-status-indicator";
 
-interface BaseExecutionNodeProps extends NodeProps {
+interface BaseTriggerNodeProps extends NodeProps {
     icon: LucideIcon | string
     name: string
     description?: string
@@ -19,7 +19,7 @@ interface BaseExecutionNodeProps extends NodeProps {
     onDoubleClick?: () => void
 }
 
-export const BaseExecutionNode = memo(
+export const BaseTriggerNode = memo(
     ({
         id,
         icon: Icon,
@@ -29,9 +29,10 @@ export const BaseExecutionNode = memo(
         status="initial",
         onSettings,
         onDoubleClick
-    }: BaseExecutionNodeProps) => {
+    }: BaseTriggerNodeProps) => {
+
         const { setNodes, setEdges } = useReactFlow()
-        
+
         const handleDelete = () => {
             setNodes((currentNodes) => {
                 const updatedNodes = currentNodes.filter((node) => node.id !== id)
@@ -53,20 +54,16 @@ export const BaseExecutionNode = memo(
                 <NodeStatusIndicator
                     status={status}
                     variant="border"
+                    className="rounded-l-2xl"
                 >
-                    <BaseNode status={status} onDoubleClick={onDoubleClick}>
+                    <BaseNode status={status} onDoubleClick={onDoubleClick} className="rounded-l-2xl relative group">
                         <BaseNodeContent>
                             {typeof Icon === "string" ? (
-                                <Image src={Icon} alt={name} width={16} height={16} />
+                                <Image src={Icon} alt={name} width={16} height={16}/>
                             ) : (
                                 <Icon className="size-4 text-muted-foreground"/>
                             )}
                             {children}
-                            <BaseHandle 
-                                id="target-1"
-                                type="target"
-                                position={Position.Left}
-                            />
                             <BaseHandle 
                                 id="source-1"
                                 type="source"
@@ -80,4 +77,4 @@ export const BaseExecutionNode = memo(
     }
 )
 
-BaseExecutionNode.displayName = "BaseExecutionNode"
+BaseTriggerNode.displayName = "BaseTriggerNode"
