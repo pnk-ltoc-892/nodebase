@@ -1,7 +1,7 @@
 import { generateSlug } from "random-word-slugs";
 import prisma from "@/lib/db";
 import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
-import z, { number } from "zod";
+import z from "zod";
 import { PAGINATION } from "@/config/constants";
 import { NodeType } from "@/generated/prisma/enums";
 import { type Node, type Edge } from "@xyflow/react";
@@ -68,7 +68,7 @@ export const workflowsRouter = createTRPCRouter({
                     z.object({
                         id: z.string(),
                         type: z.string().nullish(),
-                        position: z.object({ x: number(), y: number() }),
+                        position: z.object({ x: z.number(), y: z.number() }),
                         data: z.record(z.string(), z.any()).optional()
                     })
                 ),
