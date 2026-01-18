@@ -1,49 +1,53 @@
+import { NonRetriableError } from "inngest";
 import { inngest } from "./client";
-import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
-import { openai } from '@ai-sdk/openai';
+import prisma from "@/lib/db";
+import { topologicalSort } from "./utils";
+import { NodeType } from "@/generated/prisma/enums";
+import { getExecutor } from "@/features/executions/lib/executor-registry";
 
 
-export const execute = inngest.createFunction(
-  { id: "execute-ai" },
-  { event: "execute/ai" },
-  async ({ event, step }) => {
+export const executeWorkflow = inngest.createFunction(
+    { id: "execute-workflow" },
+    { event: "workflows/execute.workflow" },
+    async ({ event, step }) => {
 
-    await step.sleep("pretend", "5s")
+        const workflowId = event.data.workflowId
+        if(!workflowId){
+            throw new NonRetriableError("Workflow ID is missing")
+        }
 
-    // Just an inngest optimization way
-    const { steps: geminiStep } = await step.ai.wrap(
-      "gemini-generate-text",
-      generateText,
-      {
-        model: google('gemini-2.5-flash'),
-        system: "You are a helpful assistant",
-        prompt: "Give a morning motivational thought",
-        experimental_telemetry: {
-        isEnabled: true,
-        recordInputs: true,
-        recordOutputs: true,
-      },
-      }
-    )
-    const { steps: openaiStep } = await step.ai.wrap(
-      "openai-generate-text",
-      generateText,
-      {
-        model: openai('gpt-4'),
-        system: "You are a helpful assistant",
-        prompt: "Give a morning motivational thought",
-        experimental_telemetry: {
-        isEnabled: true,
-        recordInputs: true,
-        recordOutputs: true,
-      },
-        
-      }
-    )
-    return {
-      geminiStep,
-      openaiStep
-    };
-  },
+        const sortedNodes = await step.run("prepare-workflow", async () => {
+            const workflow = await prisma.workflow.findUniqueOrThrow({
+                where: {
+                    id: workflowId
+                },
+                include: {
+                    nodes: true,
+                    connections: true
+                }
+            })
+            // we can retry as DB connection error might exist - No Error if we find !workflow
+
+            return topologicalSort(workflow.nodes, workflow.connections)
+        })
+
+        // Initialize the context with any initial data from the trigger
+        let context = event.data.initialData || {}
+
+        // Execute each node
+        for(const node of sortedNodes){
+            const executor = getExecutor(node.type as NodeType)
+            context = await executor({
+                data: node.data as Record<string, unknown>,
+                nodeId: node.id,
+                context,
+                step
+            })
+        }
+
+        return {
+            workflowId,
+            result: context
+        }
+    },
 );
