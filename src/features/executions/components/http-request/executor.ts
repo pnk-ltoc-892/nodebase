@@ -1,11 +1,24 @@
+import Handlebars from "handlebars"
 import type { NodeExecutor } from "@/features/executions/types";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky"
 
+
+Handlebars.registerHelper("json", (context) => {
+    try {
+        const jsonString = JSON.stringify(context, null, 2)
+        const safeString = new Handlebars.SafeString(jsonString)
+
+        return safeString
+    } catch (error) {
+        throw new Error(`Failed to serialize context to JSON: ${error instanceof Error ? error.message : String(error)}`)
+    }
+})
+
 type HTTPRequestData = {
-    variableName?: string
-    endpoint?: string
-    method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+    variableName: string
+    endpoint: string
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
     body?: string
 }
 
@@ -25,38 +38,59 @@ export const HTTPRequestExecutor: NodeExecutor<HTTPRequestData> = async ({
         // TODO: Publish "error" state for http request
         throw new NonRetriableError("HTTP Request Node: No endpoint configured")
     }
+    if(!data.method){
+        // TODO: Publish "error" state for http request
+        throw new NonRetriableError("HTTP Request Node: Method not configured")
+    }
 
     let RequestEndpoint: string
-    try {
-        const url = new URL(data.endpoint)
-        if (!["http:", "https:"].includes(url.protocol)) {
-            throw new Error("Only http/https endpoints are allowed")
-        }
-        if (["localhost", "127.0.0.1", "::1"].includes(url.hostname)) {
-            throw new Error("Localhost endpoints are not allowed")
-        }
-        RequestEndpoint = url.toString()
-    }
-    catch {
-        throw new NonRetriableError("HTTP Request Node: Invalid or disallowed endpoint")
-    }
+    RequestEndpoint = data.endpoint
+    // try {
+    //     const url = new URL(data.endpoint)
+    //     if (!["http:", "https:"].includes(url.protocol)) {
+    //         throw new Error("Only http/https endpoints are allowed")
+    //     }
+    //     if (["localhost", "127.0.0.1", "::1"].includes(url.hostname)) {
+    //         throw new Error("Localhost endpoints are not allowed")
+    //     }
+    //     RequestEndpoint = url.toString()
+    // }
+    // catch {
+    //     throw new NonRetriableError("HTTP Request Node: Invalid or disallowed endpoint")
+    // }
 
     const result = await step.run("http-request", async () => {
-        const endpoint = RequestEndpoint! // ! - non null assertion
-        const method = data.method || "GET"
+        // http://..../{{todo.httpResponse.data.userId}}
+        // context - refers to previous node Data
+        
+        try {
+            const template = Handlebars.compile(RequestEndpoint)
+            RequestEndpoint = template(context)
+
+            if(!RequestEndpoint || typeof RequestEndpoint !== 'string'){
+                throw new Error('Endpoint template must resolve to non-empty string')
+            }
+        }
+        catch (error) {
+            throw new NonRetriableError(`HTTP Request Node: Failed to resolve endpoint template: ${error instanceof Error ? error.message : String(error)}`)
+        }
+
+        const method = data.method
 
         const options: KyOptions = { method }
 
         if(["POST", "PUT", "PATCH"].includes(method)){
-            options.body = data.body
+            const resolved = Handlebars.compile(data.body || "{}")(context)
+            JSON.parse(resolved)
+            options.body = resolved
             options.headers = {
                 "Content-Type": "application/json"
             }
         }
 
-        const response = await ky(endpoint, options)
+        const response = await ky(RequestEndpoint, options)
         
-        const contentType = response.headers.get("content-type")
+        const contentType = response.headers.get("Content-type")
 
         const isJson = contentType?.includes("application/json") || contentType?.includes("+json")
         const responseData = isJson ? await response.json() : await response.text()
@@ -69,17 +103,9 @@ export const HTTPRequestExecutor: NodeExecutor<HTTPRequestData> = async ({
             }
         }
 
-        if(data.variableName){  // Safely avoid typeError o/w
-            return {
-                ...context,
-                [data.variableName]: responsePayload
-            }
-        }
-        
-        // Fallback to direct httpResponse for backward compatibility
         return {
             ...context,
-            ...responsePayload
+            [data.variableName]: responsePayload
         }
     })
 
