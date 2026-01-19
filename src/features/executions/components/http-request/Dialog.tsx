@@ -36,25 +36,27 @@ export const HTTPRequestDialog = ({
     onSubmit,
     defaultValues = {}
 }: Props) => {
+
+    const { endpoint, method, body } = defaultValues
     
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            endpoint: defaultValues.endpoint || "",
-            method: defaultValues.method || "GET",
-            body: defaultValues.body || ""
+            endpoint: endpoint ?? "",
+            method: method ?? "GET",
+            body: body ?? ""
         }
     })
     // Reset form values when dialog opens with new defaults
     useEffect(() => {
         if(open) {
             form.reset({
-                endpoint: defaultValues.endpoint || "",
-                method: defaultValues.method || "GET",
-                body: defaultValues.body || ""
+                endpoint: endpoint ?? "",
+                method: method ?? "GET",
+                body: body ?? ""
             })
         }
-    }, [open, defaultValues, form])
+    }, [open, endpoint, method, body, form])
 
     const watchMethod = form.watch("method")
     const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod)

@@ -16,6 +16,7 @@ export const topologicalSort = (
         conn.toNodeId
     ])
 
+    // Might Be Buggy - PR: 18
     // Add nodes with no connections as self-edges to ensure they`re included
     const connectedNodeIds = new Set<string>()
     for(const conn of connections){
@@ -29,12 +30,34 @@ export const topologicalSort = (
         }
     }
 
+    // Better Way - Code Rabbit
+    // Track nodes that participate in edges
+    // const connectedNodeIds = new Set<string>()
+    // for (const conn of connections) {
+    //     connectedNodeIds.add(conn.fromNodeId)
+    //     connectedNodeIds.add(conn.toNodeId)
+    // }
+    // const isolatedNodeIds = nodes
+    //     .filter((node) => !connectedNodeIds.has(node.id))
+    //     .map((node) => node.id)
+
+
     // Perform topological sort
     let sortedNodeIds: string[]
     try {
+        // Might Give Error - PR 18
         sortedNodeIds = toposort(edges)
         // Remove Duplicates (from self-edges)
         sortedNodeIds = [...new Set(sortedNodeIds)]
+
+        // Better Way - Code Rabbit
+        // sortedNodeIds = toposort(edges)
+        // sortedNodeIds = [...new Set(sortedNodeIds)]
+        // const sortedSet = new Set(sortedNodeIds)
+        // sortedNodeIds = [
+        //     ...sortedNodeIds,
+        //     ...isolatedNodeIds.filter((id) => !sortedSet.has(id))
+        // ]
     }
     catch (error){
         if(error instanceof Error && error.message.includes("Cyclic")){
