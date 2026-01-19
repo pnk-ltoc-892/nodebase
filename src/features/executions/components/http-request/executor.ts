@@ -80,9 +80,16 @@ export const HTTPRequestExecutor: NodeExecutor<HTTPRequestData> = async ({
         const options: KyOptions = { method }
 
         if(["POST", "PUT", "PATCH"].includes(method)){
-            const resolved = Handlebars.compile(data.body || "{}")(context)
-            JSON.parse(resolved)
-            options.body = resolved
+            try {
+                const resolved = Handlebars.compile(data.body || "{}")(context)
+                JSON.parse(resolved) // Validate JSON structure
+                options.body = resolved
+            } 
+            catch (error) {
+                throw new NonRetriableError(
+                    `HTTP Request Node: Failed to resolve body template: ${error instanceof Error ? error.message : String(error)}`
+                )
+            }
             options.headers = {
                 "Content-Type": "application/json"
             }
