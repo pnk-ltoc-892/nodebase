@@ -3,6 +3,9 @@ import { memo, useState } from "react"
 import { BaseExecutionNode } from "../BaseExecutionNode"
 import { GlobeIcon } from "lucide-react"
 import { HTTPRequestFormValues, HTTPRequestDialog } from "./Dialog"
+import { useNodeStatus } from "../../hooks/use-node-status"
+import { fetchHttpRequestRealtimeToken } from "./actions"
+import { HTTP_REQUEST_CHANNEL_NAME, httpRequestChannel } from "@/inngest/channels/http-request"
 
 
 type HTTPRequestNodeData = {
@@ -17,7 +20,14 @@ type HTTPRequestNodeType = Node<HTTPRequestNodeData>
 export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
 
     const [dialogOpen, setDialogOpen] = useState(false)
-    const nodeStatus = "initial"
+
+    const nodeStatus = useNodeStatus({
+        nodeId: props.id,
+        // channel: httpRequestChannel().name,  // execute fn and then fetch name - can fail?
+        channel: HTTP_REQUEST_CHANNEL_NAME,
+        topic: "status",
+        refreshToken: fetchHttpRequestRealtimeToken
+    })
 
     const handleOpenSettings = () => setDialogOpen(true)
     
