@@ -8,7 +8,8 @@ import { NonRetriableError } from "inngest";
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
     [NodeType.INITIAL]: manualTriggerExecutor,
     [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
-    [NodeType.HTTP_REQUEST]: HTTPRequestExecutor
+    // @ts-ignore
+    [NodeType.HTTP_REQUEST]: HTTPRequestExecutor    // TODO fix types
 }
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
