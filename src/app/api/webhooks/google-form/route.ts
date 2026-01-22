@@ -9,7 +9,7 @@ import { success } from "zod"
 export async function POST(request: NextRequest){
     try {
         const url = new URL(request.url)
-        const workflowId = url.searchParams.get("worfkflowId")
+        const workflowId = url.searchParams.get("workflowId")
 
         if(!workflowId){
             return NextResponse.json({
@@ -37,6 +37,8 @@ export async function POST(request: NextRequest){
                 googleForm: formData
             }
         })
+
+        return NextResponse.json({ success: true }, { status: 200 })
     } 
     catch (error) {
         console.error("Google Form Webhook error: ", error)

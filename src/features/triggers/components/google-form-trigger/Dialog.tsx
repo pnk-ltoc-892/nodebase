@@ -24,7 +24,7 @@ export const GoogleFormTriggerDialog = ({
 
     // Construct the webhook URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    const webhookUrl = `${baseUrl}/api/webhooks/google-form?worfkflowId=${workflowId}`
+    const webhookUrl = `${baseUrl}/api/webhooks/google-form?workflowId=${workflowId}`
 
     const copyToClipboard = async () => {
         try {
@@ -42,7 +42,7 @@ export const GoogleFormTriggerDialog = ({
                 <DialogHeader>
                     <DialogTitle>Google Form Trigger Configuration</DialogTitle>
                     <DialogDescription>
-                        Use this webhook URL in your Google Form's App Script to trigger this workflow when a from is submitted
+                        Use this webhook URL in your Google Form's App Script to trigger this workflow when a Form is submitted
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
@@ -62,6 +62,8 @@ export const GoogleFormTriggerDialog = ({
                                 size="icon" 
                                 variant="outline" 
                                 onClick={copyToClipboard}
+                                aria-label="Copy webhook URL"
+                                title="Copy webhook URL"
                             >
                                 <CopyIcon className="size-4"/>
                             </Button>
