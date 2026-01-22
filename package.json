@@ -9,6 +9,7 @@
     "lint": "biome check",
     "format": "biome format --write",
     "inngest:dev": "inngest-cli dev",
+    "ngrok:dev": "ngrok http --url=uncapitalised-photogenically-delsie.ngrok-free.dev 3000",
     "dev:all": "concurrently \"npm run dev\" \"npm run inngest:dev\""
   },
   "dependencies": {
