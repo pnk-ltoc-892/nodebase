@@ -3,13 +3,15 @@ import { NodeExecutor } from "../types";
 import { manualTriggerExecutor } from "@/features/triggers/components/manual-trigger/executor";
 import { HTTPRequestExecutor } from "../components/http-request/executor";
 import { NonRetriableError } from "inngest";
+import { googleFormTriggerExecutor } from "@/features/triggers/components/google-form-trigger/executor";
 
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
     [NodeType.INITIAL]: manualTriggerExecutor,
     [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
     // @ts-ignore
-    [NodeType.HTTP_REQUEST]: HTTPRequestExecutor    // TODO fix types
+    [NodeType.HTTP_REQUEST]: HTTPRequestExecutor,    // TODO fix types
+    [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor    // TODO fix types
 }
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
