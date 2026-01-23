@@ -4,18 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
 
-// export const AVAILABLE_MODELS = [
-//     "gemini-1.5-flash",
-//     "gemini-2.0-flash",
-//     "gemini-2.5-flash",
-// ] as const
 
 const formSchema = z.object({
     variableName: z
@@ -24,21 +18,20 @@ const formSchema = z.object({
         .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
             message: "Variable name must start with a letter or underscore and can contain only letters, numbers and underscores"
         }),
-    // model: z.string().min(1, "Model is required"),
     systemPrompt: z.string().optional(),
     userPrompt: z.string().min(1, "User Prompt is required")
 })
 
-export type GeminiFormValues = z.infer<typeof formSchema>
+export type OpenAIFormValues = z.infer<typeof formSchema>
 
 interface Props {
     open: boolean
     onOpenChange: (open: boolean) => void
     onSubmit: (values: z.infer<typeof formSchema>) => void
-    defaultValues?: Partial<GeminiFormValues>
+    defaultValues?: Partial<OpenAIFormValues>
 }
 
-export const GeminiDialog = ({
+export const OpenAIDialog = ({
     open,
     onOpenChange,
     onSubmit,
@@ -51,7 +44,6 @@ export const GeminiDialog = ({
         resolver: zodResolver(formSchema),
         defaultValues: {
             variableName: variableName ?? "",
-            // model: model ?? AVAILABLE_MODELS[0],
             systemPrompt: systemPrompt ?? "",
             userPrompt: userPrompt ?? ""
         }
@@ -61,14 +53,13 @@ export const GeminiDialog = ({
         if(open) {
             form.reset({
                 variableName: variableName ?? "",
-                // model: model ?? AVAILABLE_MODELS[0],
                 systemPrompt: systemPrompt ?? "",
                 userPrompt: userPrompt ?? ""
             })
         }
     }, [open, variableName, systemPrompt, userPrompt, form])
 
-    const watchVariableName = form.watch("variableName") || "my_Gemini_Instance"
+    const watchVariableName = form.watch("variableName") || "my_OpenAI_Instance"
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
         onSubmit(values)
@@ -79,7 +70,7 @@ export const GeminiDialog = ({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Gemini Configuration</DialogTitle>
+                    <DialogTitle>OpenAI Configuration</DialogTitle>
                     <DialogDescription>
                         Configure the AI Model and prompts for this node
                     </DialogDescription>
@@ -98,7 +89,7 @@ export const GeminiDialog = ({
                                     <FormControl>
                                         <Input 
                                             {...field}
-                                            placeholder="my_Gemini_Instance"
+                                            placeholder="my_OpenAI_Instance"
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -108,38 +99,6 @@ export const GeminiDialog = ({
                                 </FormItem>
                             )}
                         />
-                        {/* <FormField 
-                            control={form.control}
-                            name="model"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Model</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select a model"/>
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {AVAILABLE_MODELS.map((model) => (
-                                                    <SelectItem key={model} value={model}>
-                                                        {model}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormDescription>
-                                        The Google Gemini model to use for completion
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        /> */}
                         <FormField
                             control={form.control}
                             name="systemPrompt"
