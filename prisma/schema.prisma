@@ -100,7 +100,6 @@ enum NodeType {
   STRIPE_TRIGGER
   GEMINI
   OPENAI
-  ANTHROPIC
 }
 model Node {
   id    String  @id  @default(cuid())
