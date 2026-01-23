@@ -5,6 +5,7 @@ import { HTTPRequestExecutor } from "../components/http-request/executor";
 import { NonRetriableError } from "inngest";
 import { googleFormTriggerExecutor } from "@/features/triggers/components/google-form-trigger/executor";
 import { stripeTriggerExecutor } from "@/features/triggers/components/stripe-trigger/executor";
+import { geminiExecutor } from "../components/gemini/executor";
 
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
@@ -12,7 +13,10 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
     [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
     [NodeType.HTTP_REQUEST]: HTTPRequestExecutor,
     [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
-    [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor
+    [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
+    [NodeType.GEMINI]: geminiExecutor,
+    [NodeType.OPENAI]: geminiExecutor,    // TODO: Fix later
+    [NodeType.ANTHROPIC]: geminiExecutor  // TODO: Fix later
 }
 
 export const getExecutor = (type: NodeType): NodeExecutor => {
