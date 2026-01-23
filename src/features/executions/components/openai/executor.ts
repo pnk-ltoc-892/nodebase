@@ -88,9 +88,11 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
             }
         )
 
+        const firstStep = steps?.[0]
+        const firstContent = firstStep?.content?.[0]
         const text = 
-            steps[0].content[0].type === "text" 
-                ? steps[0].content[0].text
+            firstContent?.type === "text" 
+                ? firstContent.text
                 : ""
         
         await publish(
