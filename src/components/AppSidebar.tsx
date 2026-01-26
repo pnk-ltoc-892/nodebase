@@ -19,9 +19,9 @@ const menuItems = [
         url: "/workflows",
       },
       {
-        title: "Ceredentials",
+        title: "Credentials",
         icon: KeyIcon,
-        url: "/ceredentials",
+        url: "/credentials",
       },
       {
         title: "Executions",

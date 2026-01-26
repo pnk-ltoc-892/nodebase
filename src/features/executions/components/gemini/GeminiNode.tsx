@@ -9,6 +9,7 @@ import { fetchGeminiRealtimeToken } from "./actions"
 
 type GeminiNodeData = {
     variableName?: string
+    credentialId?: string
     // model?: string
     systemPrompt?: string
     userPrompt?: string

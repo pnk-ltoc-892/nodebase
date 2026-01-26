@@ -4,8 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useCredentialByType } from "@/features/credentials/hooks/use-credential"
+import { CredentialType } from "@/generated/prisma/enums"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Image from "next/image"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
@@ -18,6 +22,7 @@ const formSchema = z.object({
         .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
             message: "Variable name must start with a letter or underscore and can contain only letters, numbers and underscores"
         }),
+    credentialId: z.string().min(1, "Credential is required"),
     systemPrompt: z.string().optional(),
     userPrompt: z.string().min(1, "User Prompt is required")
 })
@@ -38,12 +43,15 @@ export const OpenAIDialog = ({
     defaultValues = {}
 }: Props) => {
 
-    const { variableName, systemPrompt, userPrompt } = defaultValues
+    const { data: credentials, isLoading: isLoadingCredentials } = useCredentialByType(CredentialType.OPENAI)
+
+    const { variableName, credentialId, systemPrompt, userPrompt } = defaultValues
     
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             variableName: variableName ?? "",
+            credentialId: credentialId ?? "",
             systemPrompt: systemPrompt ?? "",
             userPrompt: userPrompt ?? ""
         }
@@ -53,11 +61,12 @@ export const OpenAIDialog = ({
         if(open) {
             form.reset({
                 variableName: variableName ?? "",
+                credentialId: credentialId ?? "",
                 systemPrompt: systemPrompt ?? "",
                 userPrompt: userPrompt ?? ""
             })
         }
-    }, [open, variableName, systemPrompt, userPrompt, form])
+    }, [open, variableName, credentialId, systemPrompt, userPrompt, form])
 
     const watchVariableName = form.watch("variableName") || "my_OpenAI_Instance"
 
@@ -115,6 +124,48 @@ export const OpenAIDialog = ({
                                     <FormDescription>
                                         Sets the behaviour of the assistant. Use {"{{variables}}"} for simple values or {"{{json variable}}"} to stringify objects
                                     </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="credentialId"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormLabel>OpenAI Credential</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={
+                                                isLoadingCredentials 
+                                                || !credentials?.length
+                                            }
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select a Credential"/>
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {credentials?.map((credential) => (
+                                                <SelectItem
+                                                    key={credential.id}
+                                                    value={credential.id}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <Image 
+                                                            src="/logos/openai.svg"
+                                                            alt="OpenAI"
+                                                            width={16}
+                                                            height={16}
+                                                        />
+                                                        {credential.name}
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
