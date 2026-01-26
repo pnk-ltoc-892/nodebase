@@ -91,7 +91,7 @@ model Credential {
   userId String 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  Node Node[]
+  nodes Node[]
 }
 
 enum CredentialType {

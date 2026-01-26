@@ -72,7 +72,13 @@ export const CredentialForm = ({
             await updateCredential.mutateAsync({
                 id: initialData.id,
                 ...values
-            })
+            },
+            {
+                onError: (error) => {
+                    handleError(error)
+                }
+            }
+        )
         }
         else{
             await createCredential.mutateAsync(values, {
@@ -96,8 +102,8 @@ export const CredentialForm = ({
                     </CardTitle>
                     <CardDescription>
                         {isEdit 
-                            ? "Update your API key or ceredential details"
-                            : "Add a new API key or ceredential to your account"}
+                            ? "Update your API key or credential details"
+                            : "Add a new API key or credential to your account"}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -124,7 +130,7 @@ export const CredentialForm = ({
                                         <FormLabel>Type</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            value={field.value}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">

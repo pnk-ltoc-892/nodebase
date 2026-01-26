@@ -124,7 +124,7 @@ export const GeminiDialog = ({
                                     <FormLabel>Gemini Credential</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
+                                        value={field.value}
                                         disabled={
                                                 isLoadingCredentials 
                                                 || !credentials?.length

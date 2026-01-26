@@ -60,7 +60,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
         throw new NonRetriableError("Gemini node: Credential is required")
     }
     if(!data.userPrompt){
-         await publish(
+        await publish(
             geminiChannel().status({
                 nodeId,
                 status: "error"
@@ -79,11 +79,17 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
         return prisma.credential.findUnique({
             where: {
                 id: data.credentialId
-                // userId is not needed
+                // TODO: Add UserId it is needed to prevent ID Injection
             }
         })
     })
     if(!credential){
+        await publish(
+            geminiChannel().status({
+                nodeId,
+                status: "error"
+            })
+        )
         throw new NonRetriableError("Gemini node: Credential not found")
     }
 

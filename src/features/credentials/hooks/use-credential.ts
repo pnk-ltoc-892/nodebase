@@ -84,7 +84,7 @@ export const useUpdateCredential = () => {
     )
 }
 
-// Hook to update credential
+// Hook to fetch credential by Type
 export const useCredentialByType = (type: CredentialType) => {
     const trpc = useTRPC()
 

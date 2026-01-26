@@ -100,7 +100,7 @@ export const CredentialsEmpty = () => {
   return (
         <EmptyView
             onNew={handleCreate}
-            message="No Credentials found. Get started by creating your Workflow"
+            message="No Credentials found. Get started by creating your First Credential"
         />
   )
 }

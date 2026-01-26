@@ -60,7 +60,7 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
             throw new NonRetriableError("OpenAI node: Credential is required")
         }
     if(!data.userPrompt){
-         await publish(
+        await publish(
             openaiChannel().status({
                 nodeId,
                 status: "error"
@@ -81,11 +81,17 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
         return prisma.credential.findUnique({
             where: {
                 id: data.credentialId
-                // userId is not needed
+                // TODO: Add UserId it is needed to prevent ID Injection
             }
         })
     })
     if(!credential){
+        await publish(
+            openaiChannel().status({
+                nodeId,
+                status: "error"
+            })
+        )
         throw new NonRetriableError("OpenAI node: Credential not found")
     }
 
