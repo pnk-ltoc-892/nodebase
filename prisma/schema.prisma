@@ -120,6 +120,8 @@ enum NodeType {
   STRIPE_TRIGGER
   GEMINI
   OPENAI
+  DISCORD
+  SLACK
 }
 
 model Node {
