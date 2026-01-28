@@ -99,6 +99,7 @@ export const DiscordDialog = ({
                                         />
                                     </FormControl>
                                     <FormDescription>
+                                    // TODO: See this .text, executor is different
                                         Use this name to reference the result in other nodes: {" "}{`{{${watchVariableName}.text}}`}
                                     </FormDescription>
                                     <FormMessage />
@@ -120,6 +121,7 @@ export const DiscordDialog = ({
                                     <FormDescription>
                                         Get this from Discord: Channel Settings - Intergrations - Webhooks
                                     </FormDescription>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />

@@ -49,13 +49,16 @@ export const discordExecutor: NodeExecutor<DiscordData> = async ({
         throw new NonRetriableError("Discord node: Message Content is missing")
     }
 
-    const rawContent = Handlebars.compile(data.content)(context)
-    const content = decode(rawContent)
-    const username = data.username
+
+    try {
+        // Move inside of try-catch Block
+        const rawContent = Handlebars.compile(data.content)(context)
+        const content = decode(rawContent)
+        const username = data.username
         ? decode(Handlebars.compile(data.username)(context))
         : undefined
 
-    try {
+
         const result = await step.run("discord-webhook", async () => {
             if(!data.webhookUrl){
                 await publish(
@@ -67,6 +70,7 @@ export const discordExecutor: NodeExecutor<DiscordData> = async ({
                 throw new NonRetriableError("Discord node: Webhook URL is required")
             }
 
+            // TODO: Strict URL Checking
             await ky.post(data.webhookUrl!, {
                 json: {
                     content: content.slice(0, 2000),
