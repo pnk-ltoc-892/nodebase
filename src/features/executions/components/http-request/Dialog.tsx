@@ -25,7 +25,6 @@ const formSchema = z.object({
     body: z
         .string()
         .optional()
-        // .refine()    TODO JSON5
 })
 
 export type HTTPRequestFormValues = z.infer<typeof formSchema>
