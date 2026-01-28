@@ -8,7 +8,7 @@ export const executionsRouter = createTRPCRouter({
     getOne: protectedProcedure
         .input(z.object({id: z.string()}))
         .query(({ ctx, input }) => {
-            return prisma.execution.findUniqueOrThrow({
+            return prisma.execution.findFirstOrThrow({
                 where: {
                     id: input.id,
                     workflow: {
@@ -34,7 +34,6 @@ export const executionsRouter = createTRPCRouter({
                     .min(PAGINATION.MIN_PAGE_SIZE)
                     .max(PAGINATION.MAX_PAGE_SIZE)
                     .default(PAGINATION.DEFAULT_PAGE_SIZE),
-                search: z.string().default(""),
             })
         )
         .query(async ({ ctx, input }) => {

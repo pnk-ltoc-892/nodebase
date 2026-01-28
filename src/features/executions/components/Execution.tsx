@@ -5,11 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useSuspenseExecution } from "@/features/executions-history/hooks/use-executions"
 import { ExecutionStatus } from "@/generated/prisma/enums"
-import { exec } from "child_process"
 import { formatDistanceToNow } from "date-fns"
 import { CheckCircle2Icon, ClockIcon, Loader2Icon, XCircleIcon } from "lucide-react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
 import { useState } from "react"
 
 
