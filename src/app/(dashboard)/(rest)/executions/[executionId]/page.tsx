@@ -1,6 +1,6 @@
 import { prefetchExecution } from "@/features/executions-history/server/prefetch"
-import { ExecutionView } from "@/features/executions/components/Execution"
-import { ExecutionsError, ExecutionsLoading } from "@/features/executions/components/Executions"
+import { ExecutionView } from "@/features/executions-history/components/Execution"
+import { ExecutionsError, ExecutionsLoading } from "@/features/executions-history/components/Executions"
 import { requireAuth } from "@/lib/auth-utils"
 import { HydrateClient } from "@/trpc/server"
 import { Suspense } from "react"
