@@ -29,6 +29,7 @@ type OpenAIData = {
 export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
     data,
     nodeId,
+    userId,
     context,
     step,
     publish
@@ -80,8 +81,8 @@ export const openAIExecutor: NodeExecutor<OpenAIData> = async ({
     const credential = await step.run("get-credential", () => {
         return prisma.credential.findUnique({
             where: {
-                id: data.credentialId
-                // TODO: Add UserId it is needed to prevent ID Injection
+                id: data.credentialId,
+                userId
             }
         })
     })
