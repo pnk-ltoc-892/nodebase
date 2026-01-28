@@ -1,6 +1,6 @@
 import { executionsParamsLoader } from "@/features/executions-history/server/params-loader"
 import { prefetchExecutions } from "@/features/executions-history/server/prefetch"
-import { ExecutionsContainer, ExecutionsError, ExecutionsList, ExecutionsLoading } from "@/features/executions/components/Executions"
+import { ExecutionsContainer, ExecutionsError, ExecutionsList, ExecutionsLoading } from "@/features/executions-history/components/Executions"
 import { requireAuth } from "@/lib/auth-utils"
 import { HydrateClient } from "@/trpc/server"
 import { SearchParams } from "nuqs"
