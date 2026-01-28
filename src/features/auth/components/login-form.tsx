@@ -48,6 +48,34 @@ const LoginForm = () => {
         })
     }
 
+    const signInGithub = async () => {
+        await authClient.signIn.social({
+            provider: "github"
+        }, 
+        {
+            onSuccess: () => {
+                router.push("/")
+            },
+            onError: (ctx) => {
+                toast.error("Something went wrong")
+            }
+        })
+    }
+
+    const signInGoogle = async () => {
+        await authClient.signIn.social({
+            provider: "google"
+        }, 
+        {
+            onSuccess: () => {
+                router.push("/")
+            },
+            onError: (ctx) => {
+                toast.error("Something went wrong")
+            }
+        })
+    }
+
     const isPending = form.formState.isSubmitting;
 
     return (
@@ -71,6 +99,7 @@ const LoginForm = () => {
                                         className="w-full"
                                         type="button"
                                         disabled={isPending}
+                                        onClick={signInGithub}
                                     >
                                         <Image alt="Github" src="/logos/github.svg" width={20} height={20} />
                                         Continue with GitHub
@@ -80,6 +109,7 @@ const LoginForm = () => {
                                         className="w-full"
                                         type="button"
                                         disabled={isPending}
+                                        onClick={signInGoogle}
                                     >
                                         <Image alt="Google" src="/logos/google.svg" width={20} height={20} />
                                         Continue with Google
