@@ -10,7 +10,8 @@
     "format": "biome format --write",
     "inngest:dev": "inngest-cli dev",
     "ngrok:dev": "ngrok http --url=uncapitalised-photogenically-delsie.ngrok-free.dev 3000",
-    "dev:all": "concurrently \"npm run dev\" \"npm run inngest:dev\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run inngest:dev\"",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.6",
