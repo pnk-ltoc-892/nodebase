@@ -1,6 +1,4 @@
 import { sendWorkflowExecution } from "@/inngest/utils";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 

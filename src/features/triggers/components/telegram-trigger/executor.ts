@@ -10,12 +10,13 @@ type TelegramTriggerData = Record<string, unknown>
 
 export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async ({
     nodeId,
+    userId, // Availble With Node Executor Params
     context,
     step,
     publish
 }) => {    
     // Moving all side-effects inside step.run() with stable step ID
-    await step.run(`telegram-trigger:${nodeId}`, async () => {
+    await step.run(`telegram-trigger-loading:${nodeId}`, async () => {
         await publish(
             telegramTriggerChannel().status({
                 nodeId,
@@ -23,24 +24,12 @@ export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async 
             })
         )
     })
-    let userId: string;
-    let credential: string;
+    let credential = "";
     try {
         // Fail Intentionally To Verify Catch Block
         // throw new Error("Error In Telegram Node")  
         // console.log(context);
 
-        userId = await step.run("find-user-id", async () => {
-            const workflow = await prisma.workflow.findUniqueOrThrow({
-                where: {
-                    id: context.workflowId as string
-                },
-                select: {
-                    userId: true
-                }
-            })
-            return workflow.userId
-        })
         credential = await step.run("find-user-bot-credential", async () => {
             const credentialValue = await prisma.credential.findFirstOrThrow({
                 where: { userId, type: CredentialType.TELEGRAM}
@@ -48,9 +37,9 @@ export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async 
             return credentialValue.value
         })
         
-        const result = await step.run(`telegram-trigger:${nodeId}`, async () => context)
+        const result = await step.run(`telegram-trigger-result:${nodeId}`, async () => context)
           
-        await step.run(`telegram-trigger:${nodeId}`, async () => {
+        await step.run(`telegram-trigger-success:${nodeId}`, async () => {
             await publish(
                 telegramTriggerChannel().status({
                     nodeId,
@@ -58,7 +47,7 @@ export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async 
                 })
             )
         })
-        await step.run(`telegram-trigger:${nodeId}`, async () => {
+        await step.run(`telegram-trigger-notify-start:${nodeId}`, async () => {
             await sendTelegramMessage({
                 credential,
                 chatId: context.chatId as string,
@@ -70,7 +59,7 @@ export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async 
         return result
     }
     catch (error) {
-        await step.run(`telegram-trigger:${nodeId}`, async () => {
+        await step.run(`telegram-trigger-error:${nodeId}`, async () => {
             await publish(
                 telegramTriggerChannel().status({
                     nodeId,
@@ -78,13 +67,15 @@ export const telegramTriggerExecutor: NodeExecutor<TelegramTriggerData> = async 
                 })
             )
         })
-        await step.run(`telegram-trigger:${nodeId}`, async () => {
-            await sendTelegramMessage({
-                credential,
-                chatId: context.chatId as string,
-                text: "Execution Failed..."
+        if (credential && context.chatId) {
+            await step.run(`telegram-trigger-notify-fail:${nodeId}`, async () => {
+                await sendTelegramMessage({
+                    credential,
+                    chatId: context.chatId as string,
+                    text: "Execution Failed..."
+                })
             })
-        })
+        }
         throw error
     }
 }

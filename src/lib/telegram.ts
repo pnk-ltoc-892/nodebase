@@ -22,7 +22,7 @@ export async function sendTelegramMessage({
 
         const BOT_TOKEN = decrypt(credential)
         if (!BOT_TOKEN) {
-            throw new Error("TELEGRAM_BOT_TOKEN is not defined");
+            throw new Error("Failed to decrypt Telegram bot token from credential");
         }
         
         const res = await ky
@@ -34,13 +34,14 @@ export async function sendTelegramMessage({
                     disable_web_page_preview: disablePreview,
                 },
                 timeout: 10_000,
+                retry: 0
             })
             .json();
 
         return res;
     } 
     catch (error) {
-        console.error("Telegram sendMessage failed:", error);
+        console.error("Telegram sendMessage failed for chat:", chatId);
         throw error;
     }
 }

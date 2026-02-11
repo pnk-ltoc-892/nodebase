@@ -27,6 +27,8 @@ export const TelegramTriggerDialog = ({ open, onOpenChange }: Props) => {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     const webhookUrl = `${baseUrl}/api/webhooks/telegram?workflowId=${workflowId}`
 
+    const isLocalDev = baseUrl.includes("localhost")
+
     const copyText = async (text: string, successMsg: string) => {
         try {
             await navigator.clipboard.writeText(text)
@@ -101,7 +103,7 @@ export const TelegramTriggerDialog = ({ open, onOpenChange }: Props) => {
                                 </li>
 
                                 {
-                                    process.env.NEXT_PUBLIC_APP_URL === "http://localhost:3000" && <>
+                                    isLocalDev && <>
                                         <li>
                                             <span className="font-medium text-foreground">Start your app locally</span>
                                             <ul className="mt-1 ml-5 list-disc space-y-1">
@@ -210,7 +212,7 @@ export const TelegramTriggerDialog = ({ open, onOpenChange }: Props) => {
                                 </li>
 
                                 {
-                                    process.env.NEXT_PUBLIC_APP_URL === "http://localhost:3000" && <>
+                                    isLocalDev && <>
                                         <li>
                                             <span className="font-medium text-foreground">Important note (ngrok URL changes)</span>
                                             <ul className="mt-1 ml-5 list-disc space-y-1">

@@ -19,7 +19,7 @@ import Link from "next/link"
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
     type: z.enum(CredentialType),
-    value: z.string().min(1, "API Key | Token is required" )
+    value: z.string().min(1, "API Key or Token is required" )
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -106,8 +106,8 @@ export const CredentialForm = ({
                     </CardTitle>
                     <CardDescription>
                         {isEdit 
-                            ? "Update your API key | Token credential details"
-                            : "Add a new API key | Token credential to your account"}
+                            ? "Update your API key or Token credential details"
+                            : "Add a new API key or Token credential to your account"}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -120,7 +120,7 @@ export const CredentialForm = ({
                                     <FormItem>
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="my API key | Token" {...field}/>
+                                            <Input placeholder="my API key or Token" {...field}/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

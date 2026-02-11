@@ -26,7 +26,7 @@ const triggerNodes: NodeTypeOption[] = [
     {
         type: NodeType.TELEGRAM,
         label: "Telegram Trigger",
-        description: "Runs the flow on when bot is triggerred",
+        description: "Runs the flow on when bot is triggered",
         icon: "/logos/telegram.svg"
     },
     {
