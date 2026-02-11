@@ -7,6 +7,7 @@ import { SlackNode } from "@/features/executions/components/slack/Slack";
 import { GoogleFormTriggerNode } from "@/features/triggers/components/google-form-trigger/GoogleFormTriggerNode";
 import { ManualTriggerNode } from "@/features/triggers/components/manual-trigger/ManualTriggerNode";
 import { StripeTriggerNode } from "@/features/triggers/components/stripe-trigger/StripeTriggerNode";
+import { TelegramTriggerNode } from "@/features/triggers/components/telegram-trigger/TelegramTriggerNode";
 import { NodeType } from "@/generated/prisma/enums";
 import { NodeTypes } from "@xyflow/react";
 
@@ -21,6 +22,7 @@ export const nodeComponents = {
     [NodeType.OPENAI]: OpenAINode,
     [NodeType.DISCORD]: DiscordNode,
     [NodeType.SLACK]: SlackNode,
+    [NodeType.TELEGRAM]: TelegramTriggerNode,
 } as const satisfies NodeTypes
 
 export type RegisteredNodeType = keyof typeof nodeComponents

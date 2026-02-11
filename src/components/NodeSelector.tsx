@@ -24,6 +24,12 @@ const triggerNodes: NodeTypeOption[] = [
         icon: MousePointerIcon
     },
     {
+        type: NodeType.TELEGRAM,
+        label: "Telegram Trigger",
+        description: "Runs the flow on when bot is triggered",
+        icon: "/logos/telegram.svg"
+    },
+    {
         type: NodeType.GOOGLE_FORM_TRIGGER,
         label: "Google Form",
         description: "Runs the flow on when Google Form is submitted",
