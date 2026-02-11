@@ -12,6 +12,7 @@ import { geminiChannel } from "./channels/gemini";
 import { openaiChannel } from "./channels/openai";
 import { discordChannel } from "./channels/discord";
 import { slackChannel } from "./channels/slack";
+import { telegramTriggerChannel } from "./channels/telegram-trigger";
 
 
 export const executeWorkflow = inngest.createFunction(
@@ -40,6 +41,7 @@ export const executeWorkflow = inngest.createFunction(
             openaiChannel(),
             discordChannel(),
             slackChannel(),
+            telegramTriggerChannel()
         ]
     },
     async ({ event, step, publish }) => {

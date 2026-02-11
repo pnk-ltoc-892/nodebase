@@ -9,6 +9,7 @@ import { geminiExecutor } from "../components/gemini/executor";
 import { openAIExecutor } from "../components/openai/executor";
 import { discordExecutor } from "../components/discord/executor";
 import { slackExecutor } from "../components/slack/executor";
+import { telegramTriggerExecutor } from "@/features/triggers/components/telegram-trigger/executor";
 
 
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
@@ -21,6 +22,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
     [NodeType.OPENAI]: openAIExecutor,
     [NodeType.DISCORD]: discordExecutor,
     [NodeType.SLACK]: slackExecutor,
+    [NodeType.TELEGRAM]: telegramTriggerExecutor,
 }
 
 export const getExecutor = (type: NodeType): NodeExecutor => {

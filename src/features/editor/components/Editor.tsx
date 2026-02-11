@@ -50,7 +50,8 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
                 nodeTypes={nodeComponents}
                 fitView
                 onInit={setEditor}
-
+                colorMode="dark"
+                
                 // TODO: Explore the settings for optimal user expirience
                 // These Allows Selection and concurrent Deletion using Backspace
                 // snapGrid={[10, 10]}
@@ -65,7 +66,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
                 // }}
             >
                 <Background />
-                <Controls />
+                <Controls/>
                 <MiniMap />
 
                 <Panel position="top-right">

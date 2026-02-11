@@ -31,7 +31,6 @@ const page = async ({ params }: PageProps) => {
                 </HydrateClient>
             </div>
         </div>
-
     )
 }
 
