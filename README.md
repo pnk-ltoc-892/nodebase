@@ -85,7 +85,7 @@ Node inputs support **Handlebars templating**:
 
 ```handlebars
 https://api.example.com/users/{{nodes.http_1.output.userId}}
-
+```
 - Reference outputs from previous nodes  
 - Custom JSON helpers  
 - Enables powerful data-driven workflows  
